@@ -15,7 +15,7 @@ The problem addressed is a **product-mix determination problem**: given a fixed 
 | $t_{i,m}$ | Processing time (hours) required by one unit of part $i$ on machine group $m$ |
 | $c_m$ | Hourly operating-cost coefficient of machine group $m$ |
 | $Cap_m$ | Available capacity (hours) of machine group $m$ over the planning period |
-| $x_i^{min}$ | Minimum committed production quantity for part $i$ |
+| $x_i^{min}$ | Minimum production floor applied to part $i$ (placeholder value — see Section 7) |
 
 ## 3. Objective Function
 
@@ -31,7 +31,7 @@ The inner sum $\sum_i t_{i,m} x_i$ represents the total hours consumed on machin
 
 $$\sum_{i=1}^{n} t_{i,m} x_i \le Cap_m \qquad \forall m = 1, \dots, M$$
 
-**Minimum quantity constraint** — production must meet previously committed minimum quantities:
+**Minimum production floor** — production must meet a floor value entered into the model to ensure a feasible, non-trivial solution:
 
 $$x_i \ge x_i^{min} \qquad \forall i = 1, \dots, n$$
 
@@ -54,5 +54,4 @@ The relationship between the decision variables ($x_i$) and both the objective (
 - The cost coefficients $c_m$ are currently preliminary estimates rather than the output of a formal, machine-level cost study (depreciation, energy, tooling, maintenance).
 - Machine groups that physically consist of multiple parallel units are modeled with a single, uniform $Cap_m$ value rather than a capacity scaled by the number of machines in the group.
 - Processing times $t_{i,m}$ for some parts have not yet been confirmed through formal time studies.
-
-These limitations do not affect the correctness of the LP formulation itself, but they do affect how literally the resulting profit figure ($Z$) should be interpreted until the underlying data is finalized.
+- The minimum production floor $x_i^{min}$ applied to every part (2 units in the current run) is **not a validated customer commitment**; it is a floor value entered to guarantee a feasible, non-trivial solution, and could equally be set to a different figure (e.g., 1 or 3) without changing the structure of the model. As a direct consequence, any observed pattern of machine groups reaching 100% utilization is an artifact of this placeholder value combined with the uniform capacity assumption above — it should not be read as a validated bottleneck finding.
